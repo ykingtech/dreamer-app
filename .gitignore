@@ -1,0 +1,16 @@
+.dart_tool/
+.idea/
+.vscode/
+build/
+pubspec.lock
+*.iml
+android/key.properties
+android/*.jks
+android/*.keystore
+ios/Runner/GoogleService-Info.plist
+*.p12
+*.mobileprovision
+*.cer
+*.pem
+*.p8
+.env

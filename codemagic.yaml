@@ -1,0 +1,48 @@
+workflows:
+  android-release:
+    name: Dreamer Android Release
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      groups:
+        - dreamer-secrets
+      android_signing:
+        - dreamer_keystore
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Build signed Android App Bundle
+        script: flutter build appbundle --release --dart-define=DREAMER_WORKER_URL=$DREAMER_WORKER_URL
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
+    publishing:
+      email:
+        recipients:
+          - lankaknot@gmail.com
+
+  ios-release:
+    name: Dreamer iOS Release
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: dreamer_app_store_connect
+    environment:
+      flutter: stable
+      groups:
+        - dreamer-secrets
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.lankaknot.dreamer
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+      - name: Set up iOS signing
+        script: xcode-project use-profiles
+      - name: Build signed IPA
+        script: flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist --dart-define=DREAMER_WORKER_URL=$DREAMER_WORKER_URL
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      email:
+        recipients:
+          - lankaknot@gmail.com
